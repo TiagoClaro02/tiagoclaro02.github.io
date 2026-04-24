@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NEST USV | Tiago Claro</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="info">
+        <h1>NEST USV</h1>
+        <p>Non-stationary Emersed Structure for Takeoff-landing</p>
+    </div>
+</header>
+
+<nav class="nav">
+    <a href="../index.html">Back to Portfolio</a>
+</nav>
+
+<section class="activity-block">
+    <h2>Project Overview</h2>
+    <p>The NEST (Non-stationary Emersed Structure for Takeoff-landing) is an autonomous surface vehicle (USV) specifically purpose-built to support Unmanned Aerial Vehicle (UAV) operations in maritime environments[cite: 2308]. Featuring a novel catamaran-style dual-hull configuration, it provides a highly stable 2.0 x 2.0 meter platform that enables UAVs to safely land during and after offshore inspection missions, such as monitoring floating photovoltaic (PV) plants[cite: 2314, 2316].</p>
+
+    <h2>Technical Specifications</h2>
+    <div class="card">
+        <div class="text">
+            <ul>
+                <li><strong>Dimensions:</strong> 2.0 m × 2.0 m × 1.3 m [cite: 2312]</li>
+                <li><strong>Total Weight:</strong> ~100 kg [cite: 2312]</li>
+                <li><strong>Available Payload:</strong> ~200 kg [cite: 2312]</li>
+                <li><strong>Drive Mode:</strong> Vectorial drive (Holonomic navigation) [cite: 2312, 2336]</li>
+                <li><strong>Max Speed:</strong> 1.5 m/s [cite: 2312]</li>
+                <li><strong>Power Supply:</strong> LiFePO4 25.6 V @ 200 Ah (Operation time: ~2 h) [cite: 2312]</li>
+                <li><strong>On-board Sensors:</strong> GPS, IMU, Compass, 3D LiDAR, Visual and Thermal cameras [cite: 2312, 2330, 2331]</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>Hardware & Software Architecture</h2>
+    <p>The hardware architecture of the NEST USV follows a modular design, physically separating the power and electronic subsystems[cite: 2317]. The electronics module manages navigation, controlling the four thrusters, and integrates an onboard computer (NUC) with a CubeOrange flight controller[cite: 2323, 2324].</p>
+    
+    <p>The software architecture is built around the ROS2 nav2 framework for autonomous navigation[cite: 2390]. The flight controller runs a modified version of the ArduSub firmware, which was adapted to support a vectored thruster configuration for holonomic position hold—a critical capability for safe UAV landing and takeoff procedures[cite: 2334, 2336, 2337]. The system employs a hybrid path planning approach, utilizing both global path generation and a local Adaptive Velocity Obstacle Avoidance (AVOA) algorithm[cite: 1969, 2439, 2441].</p>
+</section>
+
+</body>
+</html>
