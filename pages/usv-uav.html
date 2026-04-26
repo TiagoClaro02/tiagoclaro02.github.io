@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cooperative Mission Planning | Tiago Claro</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+
+<header class="header">
+    <div class="info">
+        <h1>UAV-USV Cooperation</h1>
+        <p>Autonomous Mission Planning and Coordination Framework</p>
+    </div>
+</header>
+
+<nav class="nav">
+    <a href="../index.html">Back to Portfolio</a>
+</nav>
+
+<main class="container">
+    <section id="overview">
+        <h2>System Architecture</h2>
+        <p>The integration of Unmanned Aerial Vehicles (UAVs) and Unmanned Surface Vehicles (USVs) for autonomous survey missions requires a hybrid architecture. In this framework, the Ground Station acts as a supervisory interface for mission configuration and monitoring. Once deployed, time-critical tasks rely on a decentralized host-guest communication model.</p>
+        <p>The USV acts as the "host," issuing commands like enabling flight modes or triggering takeoffs, while the UAV acts as the "guest," acknowledging and validating operations. This tight coupling allows the UAV to focus on inspection tasks while offloading navigation and communication responsibilities to the USV.</p>
+        
+        <figure>
+            <img src="../assets/images/mission_planner.png" alt="Mission Planner Architecture showing Ground Station, USV, and UAV communication">
+            <figcaption>Mission Planner Architecture detailing human-robot and robot-robot communication flows.</figcaption>
+        </figure>
+    </section>
+
+    <section id="pre-planning">
+        <h2>Pre-planning and Map Acquisition</h2>
+        <p>Mission configuration begins in QGroundControl (QGC), where the operator defines a survey polygon and flight parameters (altitude, line spacing, etc.). The Mission Planner then parses the generated flight path to identify optimal takeoff and landing coordinates for the USV.</p>
+        <p>To ensure safe navigation, a custom ROS package automatically generates a 2D occupancy grid of the operational environment. Map tiles are fetched from OpenStreetMap, stitched together, and processed through color thresholding to isolate navigable water.</p>
+        <ul>
+            <li><strong>Tidal Safety Margins:</strong> A dilation operation expands non-navigable regions to account for tidal variations. Assuming a worst-case 40-degree slope for coastal structures, a conservative 5-meter safety buffer is applied to protect the USV from submerged hazards at low tide.</li>
+            <li><strong>Dynamic Obstacles:</strong> If inspecting a newly introduced structure, the UAV's survey area itself is bounded and injected into the occupancy grid as a navigational obstacle to optimize the USV's global path.</li>
+        </ul>
+        
+        <figure>
+            <img src="../assets/images/get_map.png" alt="Workflow of map acquisition from OpenStreetMap to Occupancy Grid">
+            <figcaption>Pipeline for generating the occupancy grid from geospatial data.</figcaption>
+        </figure>
+    </section>
+
+    <section id="mission-execution">
+        <h2>Spatial-Temporal Mission Execution</h2>
+        <p>To coordinate the temporal sequence of events between the two vehicles, the mission is governed by a robust state machine. This ensures tasks occur in the correct order while safely handling contingencies.</p>
+        <ul>
+            <li><strong>CONFIG & IDLE:</strong> The system initializes, retrieves waypoints, converts GPS coordinates to local maps, and waits for a user start signal.</li>
+            <li><strong>NAVIGATION:</strong> The USV autonomously moves between waypoints, actively monitoring for completion and emergencies.</li>
+            <li><strong>ACTION:</strong> At each waypoint, the USV executes specific tasks (e.g., <i>Wait</i>, <i>Position Hold</i>, <i>Takeoff</i>, or <i>Landing</i>) before returning to the navigation state.</li>
+            <li><strong>ERROR & EMERGENCY:</strong> The system gracefully halts on critical faults or triggers safe recovery protocols if an emergency is detected.</li>
+        </ul>
+
+        <figure>
+            <img src="../assets/images/state_machine.png" alt="State Machine Diagram of the mission planner">
+            <figcaption>State Machine governing the autonomous mission execution.</figcaption>
+        </figure>
+    </section>
+
+    <section id="emergency-handling">
+        <h2>Emergency Handling & Rendezvous Optimization</h2>
+        <p>In scenarios such as UAV battery depletion or environmental hazards, the system must rapidly identify a safe rendezvous point for the UAV to land on the USV. This is treated as a multi-criteria optimization problem.</p>
+        <p>The algorithm minimizes a composite cost function that balances three key factors:</p>
+        <ol>
+            <li><strong>Coordination Time:</strong> Minimizing the maximum travel time for both vehicles to reach the rendezvous point, accounting for their speed differential.</li>
+            <li><strong>Return to Home:</strong> A penalty factor that favors waypoints closer to the home base to facilitate final mission recovery.</li>
+            <li><strong>Safety Buffer:</strong> Ensuring the selected waypoint lies within cost-free, navigable water with adequate clearance from obstacles.</li>
+        </ol>
+        <p>To guarantee a solution, the system uses a robust four-stage hierarchical approach: starting with gradient-based optimization, falling back to expanding circular search regions, moving to coarse grid sampling, and ultimately using a deterministic proximity search if previous stages fail.</p>
+        
+        <figure>
+            <img src="../assets/images/emergency.png" alt="Visual representation of the emergency circular search logic">
+            <figcaption>Stage 2 of the emergency landing solver, evaluating candidate waypoints using concentric search radii.</figcaption>
+        </figure>
+    </section>
+</main>
+
+</body>
+</html>

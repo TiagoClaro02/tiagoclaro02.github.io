@@ -19,30 +19,102 @@
     <a href="../index.html">Back to Portfolio</a>
 </nav>
 
-<section class="activity-block">
-    <h2>Project Overview</h2>
-    <p>The NEST (Non-stationary Emersed Structure for Takeoff-landing) is an autonomous surface vehicle (USV) specifically purpose-built to support Unmanned Aerial Vehicle (UAV) operations in maritime environments[cite: 2308]. Featuring a novel catamaran-style dual-hull configuration, it provides a highly stable 2.0 x 2.0 meter platform that enables UAVs to safely land during and after offshore inspection missions, such as monitoring floating photovoltaic (PV) plants[cite: 2314, 2316].</p>
+<main class="container">
+    <section id="overview">
+        <h2>Project Overview</h2>
+        <p>The NEST (Non-stationary Emersed Structure for Takeoff-landing) is a novel catamaran-style Unmanned Surface Vehicle (USV) designed to serve as a mobile launch and recovery platform for Unmanned Aerial Vehicles (UAVs). This project aims to improve the inspection of floating photovoltaic (PV) plants through a cooperative approach, where the USV provides transportation and communication infrastructure to the UAV.</p>
+        <p>By transporting the UAV to the offshore inspection site and retrieving it afterward, the USV significantly reduces the UAV's flight time and extends its effective operation range. The dual-hull configuration ensures a stable platform for safe landings in maritime environments.</p>
+        
+        <figure>
+            <img src="../assets/images/schematic_mission.png" alt="Schematic overview of the multi-stage autonomous inspection mission">
+            <figcaption>Schematic overview of the multi-stage autonomous USV-UAV inspection mission.</figcaption>
+        </figure>
+        
+        <figure>
+            <img src="../assets/images/nest_usv.png" alt="NEST USV Catamaran Design">
+            <figcaption>NEST USV, featuring a catamaran design and a 2x2 meter UAV landing platform.</figcaption>
+        </figure>
+    </section>
 
-    <h2>Technical Specifications</h2>
-    <div class="card">
-        <div class="text">
-            <ul>
-                <li><strong>Dimensions:</strong> 2.0 m × 2.0 m × 1.3 m [cite: 2312]</li>
-                <li><strong>Total Weight:</strong> ~100 kg [cite: 2312]</li>
-                <li><strong>Available Payload:</strong> ~200 kg [cite: 2312]</li>
-                <li><strong>Drive Mode:</strong> Vectorial drive (Holonomic navigation) [cite: 2312, 2336]</li>
-                <li><strong>Max Speed:</strong> 1.5 m/s [cite: 2312]</li>
-                <li><strong>Power Supply:</strong> LiFePO4 25.6 V @ 200 Ah (Operation time: ~2 h) [cite: 2312]</li>
-                <li><strong>On-board Sensors:</strong> GPS, IMU, Compass, 3D LiDAR, Visual and Thermal cameras [cite: 2312, 2330, 2331]</li>
-            </ul>
-        </div>
-    </div>
+    <section id="specifications">
+        <h2>Technical Specifications</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Characteristics</th>
+                    <th>Specifications</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Dimensions</td>
+                    <td>2.0 m × 2.0 m × 1.3 m</td>
+                </tr>
+                <tr>
+                    <td>Total weight</td>
+                    <td>~100 kg</td>
+                </tr>
+                <tr>
+                    <td>Available payload</td>
+                    <td>~200 kg</td>
+                </tr>
+                <tr>
+                    <td>Drive mode</td>
+                    <td>Vectorial drive</td>
+                </tr>
+                <tr>
+                    <td>Max speed</td>
+                    <td>1.5 m/s</td>
+                </tr>
+                <tr>
+                    <td>On-board sensors</td>
+                    <td>Navigation: GPS, IMU, Compass. Perception: 3D LiDAR, visual and thermal cameras</td>
+                </tr>
+                <tr>
+                    <td>Power supply</td>
+                    <td>LiFePO4 25.6 V @ 200 Ah</td>
+                </tr>
+                <tr>
+                    <td>Power consumption / Operation time</td>
+                    <td>~3300 W / ~2 h</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 
-    <h2>Hardware & Software Architecture</h2>
-    <p>The hardware architecture of the NEST USV follows a modular design, physically separating the power and electronic subsystems[cite: 2317]. The electronics module manages navigation, controlling the four thrusters, and integrates an onboard computer (NUC) with a CubeOrange flight controller[cite: 2323, 2324].</p>
-    
-    <p>The software architecture is built around the ROS2 nav2 framework for autonomous navigation[cite: 2390]. The flight controller runs a modified version of the ArduSub firmware, which was adapted to support a vectored thruster configuration for holonomic position hold—a critical capability for safe UAV landing and takeoff procedures[cite: 2334, 2336, 2337]. The system employs a hybrid path planning approach, utilizing both global path generation and a local Adaptive Velocity Obstacle Avoidance (AVOA) algorithm[cite: 1969, 2439, 2441].</p>
-</section>
+    <section id="hardware-architecture">
+        <h2>Hardware Architecture</h2>
+        <p>The NEST USV utilizes a modular design, distinctly separating the power and electronic subsystems.</p>
+        <ul>
+            <li><strong>Power Module:</strong> Housed in an IP67-rated Peli Air case, it includes a 24V battery, a power switch, a fuse for over-current protection, and a charging port.</li>
+            <li><strong>Electronics Module:</strong> Located in an IP67 Fibox enclosure, this module integrates an onboard computer, a CubeOrange flight controller, and sensors including GPS, IMUs, a compass, and a LiDAR sensor.</li>
+            <li><strong>Actuation & Firmware:</strong> The flight controller runs a modified version of ArduSub firmware adapted to support a vectored thruster configuration. This enables holonomic navigation, which is essential for position holding during UAV takeoff and landing.</li>
+        </ul>
+        
+        <figure>
+            <img src="../assets/images/electronics.png" alt="Electrical schematic of the electronics module">
+            <figcaption>Electrical schematic of the NEST USV's electronics module.</figcaption>
+        </figure>
+    </section>
+
+    <section id="software-navigation">
+        <h2>Software Architecture & Autonomous Navigation</h2>
+        <p>The navigation architecture is built around the ROS2 nav2 framework to autonomously manage task allocation, waypoint routing, and obstacle avoidance.</p>
+        
+        <figure>
+            <img src="../assets/images/nav_pipe.png" alt="Navigation pipeline">
+            <figcaption>The complete navigation processing pipeline.</figcaption>
+        </figure>
+
+        <ul>
+            <li><strong>Localization & Sensor Fusion:</strong> An Extended Kalman Filter (EKF) merges GPS, IMU, and compass data to maintain robust pose estimation. The system seamlessly maps ArduSub's standard North-East-Down (NED) coordinate frames to the East-North-Up (ENU) framework used by ROS2.</li>
+            <li><strong>Costmap Generation & Path Planning:</strong> The workspace is modeled using an occupancy grid converted into a costmap with spatial decay inflation layers to provide safety margins around static obstacles. The global planner uses artificial potential fields (navigation functions) to calculate an optimal, local-minima-free route.</li>
+            <li><strong>Velocity Control:</strong> A modified Pure Pursuit algorithm tracks the planned path using an adaptive lookahead mechanism to determine desired velocities, enhanced by two-stage filtering for smooth motion and acceleration limits.</li>
+            <li><strong>Local Planner (AVOA):</strong> The Adaptive Velocity Obstacle Avoidance (AVOA) algorithm operates in real-time to avoid dynamic obstacles by restricting dangerous velocity space within predefined time-window constraints.</li>
+            <li><strong>Thrust Control:</strong> A decoupled PID architecture independently translates linear and angular velocity targets into corresponding physical thrust forces, utilizing gain scheduling for low speeds and anti-windup protection.</li>
+        </ul>
+    </section>
+</main>
 
 </body>
 </html>
