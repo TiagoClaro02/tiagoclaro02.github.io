@@ -19,9 +19,19 @@
     <a href="../index.html">Back to Portfolio</a>
 </nav>
 
+<nav class="section-index">
+    <a href="#overview">System Architecture</a>
+    <a href="#pre-planning">Pre-planning & Map Acquisition</a>
+    <a href="#mission-execution">Spatial-Temporal Mission Execution</a>
+    <a href="#emergency-handling">Emergency Handling & Rendezvous Optimization</a>
+    <a href="#cooperative-mission-planning">USV–UAV Cooperative Mission Planning</a>
+    <a href="#videos">Videos</a>
+</nav>
+
 <main class="container">
     <section id="overview">
         <h2>System Architecture</h2>
+        <hr>
         <p>The integration of Unmanned Aerial Vehicles (UAVs) and Unmanned Surface Vehicles (USVs) for autonomous survey missions—specifically the inspection of floating photovoltaic (PV) plants—requires a hybrid architecture. In this framework, the Ground Station acts as a supervisory interface for mission configuration and monitoring. Once deployed, time-critical tasks rely on a decentralized host-guest communication model.</p>
         <p>The USV acts as the "host," issuing commands like enabling flight modes or triggering takeoffs, while the UAV acts as the "guest," acknowledging and validating operations. By transporting the drone to the offshore solar site, the USV mitigates the UAV's limited flight endurance. This tight coupling allows the UAV to focus entirely on scanning the solar panels for thermal hot-spots and physical obstructions, while offloading navigation and communication responsibilities to the USV.</p>
         
@@ -38,6 +48,7 @@
 
     <section id="pre-planning">
         <h2>Pre-planning and Map Acquisition</h2>
+        <hr>
         <p>Mission configuration begins in QGroundControl (QGC), where the operator defines a survey polygon and flight parameters (altitude, line spacing, etc.). The Mission Planner then parses the generated flight path to identify optimal takeoff and landing coordinates for the USV.</p>
         <p>To ensure safe navigation, a custom ROS package automatically generates a 2D occupancy grid of the operational environment. Map tiles are fetched from OpenStreetMap, stitched together, and processed through color thresholding to isolate navigable water.</p>
         <ul>
@@ -53,6 +64,7 @@
 
     <section id="mission-execution">
         <h2>Spatial-Temporal Mission Execution</h2>
+        <hr>
         <p>To coordinate the temporal sequence of events between the two vehicles, the mission is governed by a robust state machine. This ensures tasks occur in the correct order while safely handling contingencies.</p>
         <ul>
             <li><strong>CONFIG & IDLE:</strong> The system initializes, retrieves waypoints, converts GPS coordinates to local maps, and waits for a user start signal.</li>
@@ -69,6 +81,7 @@
 
     <section id="emergency-handling">
         <h2>Emergency Handling & Rendezvous Optimization</h2>
+        <hr>
         <p>In scenarios such as UAV battery depletion or environmental hazards, the system must rapidly identify a safe rendezvous point for the UAV to land on the USV. This is treated as a multi-criteria optimization problem.</p>
         <p>The algorithm minimizes a composite cost function that balances three key factors:</p>
         <ol>
@@ -84,34 +97,168 @@
         </figure>
     </section>
 
-    <!-- <section id="results">
-        <h2>Mission Validation & Performance</h2>
-        <p>The cooperative mission planning framework was extensively tested to evaluate its impact on overall inspection efficiency, path generation, and emergency responsiveness.</p>
+    <section id="cooperative-mission-planning">
+        <div class="content-container">
 
-        <h3>Cooperative Efficiency vs. Solo UAV</h3>
-        <p>The primary advantage of the marsupial approach is mitigating drone battery limitations. In a simulated inspection of the Alqueva dam floating PV plant, the cooperative mission took 42 minutes, with the UAV only airborne for 17 minutes to cover 2,367 meters of solar panels.</p>
-        <ul>
-            <li><strong>Maximized Inspection Time:</strong> Only 50 meters of the UAV's flight was spent in transit. An impressive 97.89% of its total flight distance was dedicated strictly to the inspection task.</li>
-            <li><strong>Overcoming Battery Limits:</strong> If a solo UAV were to perform the same mission from shore, 30.5% of its flight would be wasted just traveling to and from the offshore site. This would push the total flight time to approximately 25 minutes—exceeding the standard 20-minute endurance limit of commercial multi-rotors.</li>
-            <li><strong>Overall Reduction:</strong> The cooperative architecture reduced total UAV flight time by 32%, proving its necessity for deep-water or distant offshore inspections.</li>
-        </ul>
+            <h2>USV–UAV Cooperative Mission Planning</h2>
+            <hr>
+            <p>
+                A cooperative mission planning framework was developed to overcome UAV endurance limitations 
+                in offshore operations. The USV acts as an autonomous launch, recovery, and communication platform, 
+                enabling extended inspection missions such as floating photovoltaic (PV) farms.
+            </p>
 
-        <h3>Field Testing: Full Mission Pipeline</h3>
-        <p>To validate the system beyond simulations, near-real scenarios were executed at the ATLANTIS Test Center. The NEST successfully established communication links with the ground station and executed the full logic pipeline in physical waters. The USV reliably entered position-hold mode at designated waypoints, triggered the UAV takeoff sequence, and waited for landing confirmation before returning to the home position.</p>
+            <!-- ================= MAP PROCESSING ================= -->
+            <div class="subsection">
+                <h3>Map Acquisition & Pre-Processing</h3>
+                <p>
+                    Mission environments are automatically generated from OpenStreetMap data. 
+                    A processing pipeline converts raw maps into navigable regions using thresholding 
+                    and dilation, ensuring safe margins from land and obstacles.
+                </p>
 
-        <figure>
-            <img src="images/figure4_21_field_mission.jpg" alt="Side-by-side comparison of RViz simulation and real-world drone footage showing USV-UAV cooperation">
-            <figcaption>Full mission execution in the field: the USV reliably holds position to deploy and recover the UAV, perfectly mirroring the simulated logic.</figcaption>
-        </figure>
+                <div class="image-gallery">
+                    <figure>
+                        <img src="../assets/images/raw_map.png" alt="Raw map">
+                        <figcaption>Raw map data from OpenStreetMap.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="../assets/images/bin_thresh.png" alt="Binary map">
+                        <figcaption>Binary map isolating navigable areas.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="../assets/images/bin_dil.png" alt="Processed map">
+                        <figcaption>Final map with safety margins applied.</figcaption>
+                    </figure>
+                </div>
+            </div>
 
-        <h3>Emergency Retrieval Validation</h3>
-        <p>To test the system's resilience, an emergency retrieval was deliberately triggered mid-mission while the UAV was inspecting panels and the USV was navigating to the landing zone. The results were highly successful:</p>
-        <ul>
-            <li>Both vehicles instantly aborted their standard tasks and routed to the dynamically calculated optimal rendezvous point.</li>
-            <li>The algorithm successfully accounted for the vehicles' speed differential (1:8 ratio), ensuring the USV reached the emergency waypoint first, minimizing the UAV's airborne loiter time.</li>
-            <li>The UAV landed safely within 75 seconds of the emergency trigger, and the entire recovery (including the coupled return to shore) was completed in just 4 minutes.</li>
-        </ul>
-    </section> -->
+            <!-- ================= MISSION EXECUTION ================= -->
+            <div class="subsection">
+                <h3>Cooperative Execution</h3>
+                <p>
+                    The USV navigates to deployment points, launches the UAV, and repositions for recovery. 
+                    GPS coordinates are converted into map-frame references for global planning, enabling 
+                    coordinated navigation and mission execution.
+                </p>
+
+                <p>
+                    This approach significantly improves efficiency: instead of long transit flights, 
+                    the UAV focuses almost entirely on inspection tasks, reducing unnecessary travel distance.
+                </p>
+
+                <div class="image-gallery">
+                    <div style="text-align: center;">
+                        <img src="../assets/images/mission execution.png"
+                            alt="Real vs simulation"
+                            style="width: 75%; border-radius: 8px;">
+                        <p style="font-size: 0.9rem; color: #aaa;">
+                            USV trajectory during deployment and recovery.
+                        </p>
+                    </div>
+                    <div style="text-align: center;">
+                        <img src="../assets/images/mission_qgc.png"
+                            alt="Real vs simulation"
+                            style="width: 75%; border-radius: 8px;">
+                        <p style="font-size: 0.9rem; color: #aaa;">
+                            Full mission trajectories of USV and UAV.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= PERFORMANCE ================= -->
+            <div class="subsection">
+                <h3>Efficiency Gains</h3>
+                <p>
+                    The cooperative strategy reduced UAV transit distance from ~1038 m to ~50 m, 
+                    achieving ~98% inspection efficiency. Total UAV flight time decreased by ~32%, 
+                    enabling full mission completion within battery constraints.
+                </p>
+            </div>
+
+            <!-- ================= EMERGENCY ================= -->
+            <div class="subsection">
+                <h3>Emergency Retrieval</h3>
+                <p>
+                    A multi-criteria emergency algorithm enables safe recovery during failures. 
+                    Both vehicles redirect to a dynamically computed rendezvous point, prioritizing 
+                    the slower USV to minimize UAV loiter time.
+                </p>
+
+                <p>
+                    In testing, successful recovery was achieved in ~75 seconds, demonstrating 
+                    robust coordination under failure conditions.
+                </p>
+
+                <div class="image-gallery">
+                    <div style="text-align: center;">
+                        <img src="../assets/images/emergency_execution.png"
+                            alt="Real vs simulation"
+                            style="width: 75%; border-radius: 8px;">
+                        <p style="font-size: 0.9rem; color: #aaa;">
+                            Emergency redirection sequence.
+                        </p>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <img src="../assets/images/emergency_qgc.png"
+                            alt="Real vs simulation"
+                            style="width: 75%; border-radius: 8px;">
+                        <p style="font-size: 0.9rem; color: #aaa;">
+                            Final trajectories after emergency recovery.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="video-section" id="videos">
+
+        <h2>Videos</h2>
+
+        <!-- Video 1 -->
+        <div class="video-block">
+            <video autoplay muted loop playsinline>
+                <source src="../assets/videos/presentation_video.mp4" type="video/mp4">
+            </video>
+            <p class="video-caption">
+                Full mission execution in simulation
+            </p>
+        </div>
+
+        <!-- Video 2 -->
+        <div class="video-block">
+            <video autoplay muted loop playsinline>
+                <source src="../assets/videos/emergency_vid.mp4" type="video/mp4">
+            </video>
+            <p class="video-caption">
+                Emergency retrieval sequence in simulation
+            </p>
+        </div>
+
+
+        <!-- Row 2: synchronized stacked videos -->
+
+        <div class="video-row">
+
+            <video id="v1" autoplay loop muted playsinline>
+                <source src="../assets/videos/real_mission_dji.mp4" type="video/mp4">
+            </video>
+
+            <video id="v2" autoplay loop muted playsinline>
+                <source src="../assets/videos/rviz_real.mp4" type="video/mp4">
+            </video>
+            <p class="video-caption">
+                Real world mission execution (top) and corresponding RViz visualization (bottom) with simulated UAV (simulated through ROS services as shown in the video).
+            </p>
+        </div>
+
+</section>
+
+    </section>
 </main>
 
 </body>

@@ -19,9 +19,28 @@
     <a href="../index.html">Back to Portfolio</a>
 </nav>
 
+<nav class="section-index">
+    <a href="#overview">Overview</a>
+    <a href="#specifications">Specs</a>
+    <a href="#hardware-architecture">Hardware</a>
+    <a href="#software-navigation">Software</a>
+    <a href="#nest-usv-results">Results</a>
+    <a href="#videos">Videos</a>
+</nav>
+
+<figure class="video-container">
+    <video autoplay muted loop playsinline>
+        <source src="../assets/videos/separador_edited.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <figcaption>NEST USV</figcaption>
+</figure>
+
 <main class="container">
     <section id="overview">
+
         <h2>Project Overview</h2>
+        <hr>
         <p>The NEST (Non-stationary Emersed Structure for Takeoff-landing) is a novel catamaran-style Unmanned Surface Vehicle (USV) custom-engineered to serve as a mobile launch and recovery platform for Unmanned Aerial Vehicles (UAVs). Designed to operate autonomously in maritime environments, it acts as a floating base station that provides essential transportation, power, and communication infrastructure to support extended aerial operations.</p>
         <p>Built with a highly stable dual-hull configuration, the NEST USV features an integrated 2x2 meter landing pad capable of supporting precise UAV landings even under challenging aquatic conditions. Its holonomic vectorial drive system enables advanced maneuverability and active position-holding, which are critical for executing safe and reliable UAV deployment and retrieval procedures at sea.</p>
         
@@ -33,6 +52,7 @@
 
     <section id="specifications">
         <h2>Technical Specifications</h2>
+        <hr>
         <table>
             <thead>
                 <tr>
@@ -79,6 +99,7 @@
 
     <section id="hardware-architecture">
         <h2>Hardware Architecture</h2>
+        <hr>
         <p>The NEST USV utilizes a modular design, distinctly separating the power and electronic subsystems.</p>
         <ul>
             <li><strong>Power Module:</strong> Housed in an IP67-rated Peli Air case, it includes a 24V battery, a power switch, a fuse for over-current protection, and a charging port.</li>
@@ -94,6 +115,7 @@
 
     <section id="software-navigation">
         <h2>Software Architecture & Autonomous Navigation</h2>
+        <hr>
         <p>The navigation architecture is built around the ROS2 nav2 framework to autonomously manage task allocation, waypoint routing, and obstacle avoidance.</p>
         
         <figure>
@@ -110,29 +132,115 @@
         </ul>
     </section>
 
-    <!-- <section id="results">
-        <h2>Experimental Results & Field Testing</h2>
-        <p>To rigorously validate the NEST platform prior to real-world deployment, a series of physics-based simulations were conducted, followed by near-real field tests at the ATLANTIS Test Center in Viana do Castelo[cite: 750, 957].</p>
-        
-        <h3>Simulation & Kinematic Validation</h3>
-        <p>The initial validation utilized the Gazebo simulator, enhanced with an ocean plugin to accurately model buoyancy and physical maritime interactions[cite: 751]. A Software-In-The-Loop (SITL) approach was employed, allowing virtual sensor data to be processed directly by the ArduSub autopilot firmware[cite: 762]. This ensured the hardware-software interface was realistically simulated without simplified abstractions[cite: 763]. During autonomous waypoint navigation tests with an empty costmap to a goal at (20, 60) meters, the NEST traveled 63.2 meters in approximately 60 seconds[cite: 774, 776, 805]. This resulted in an average linear velocity of 1.05 m/s, demonstrating smooth trajectory tracking and consistent performance under ideal conditions[cite: 805].</p>
+    <section id="nest-usv-results" class="portfolio-section">
+        <div class="content-container">
 
-        <h3>Real-World Navigation & Environmental Compensation</h3>
-        <p>Physical field tests were executed to assess the mechanical integrity, kinematic configuration, and low-level thruster control[cite: 958]. During a real-world waypoint navigation test, the NEST covered a distance of approximately 40 meters in 49 seconds[cite: 966]. This yielded an average velocity of 0.82 m/s[cite: 966]. The suboptimal speed, compared to the simulation, demonstrated the low-level controller's active compensation for external environmental factors such as water currents and wind while successfully maintaining the planned trajectory[cite: 966].</p>
+            <h2>Results</h2>
+            <hr>
+            <!-- ================= SITL ================= -->
+            <div class="subsection">
+                <h3>SITL Simulation</h3>
+                <p>
+                    The system was validated in Gazebo using a Software-In-The-Loop (SITL) setup, 
+                    where simulated sensors interfaced directly with the ArduSub autopilot. 
+                    An ocean dynamics plugin was integrated to model buoyancy and vehicle interaction 
+                    with the environment. Frame transformations were verified in RViz to support localization debugging.
+                </p>
 
-        <figure>
-            <img src="images/figure4_19_field_navigation.jpg" alt="Side-by-side comparison of RViz simulation and real-world drone footage of the NEST USV navigating">
-            <figcaption>Waypoint navigation progression: comparison between RViz simulation planning and real-world field execution[cite: 981].</figcaption>
-        </figure>
+                <div class="image-gallery">
+                    <figure>
+                        <img src="../assets/images/nest_model.png" alt="NEST USV in Gazebo">
+                        <figcaption>NEST USV model in Gazebo.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="../assets/images/rviz_tf.png" alt="RViz frames visualization">
+                        <figcaption>RViz visualization of map and base_link frames.</figcaption>
+                    </figure>
+                </div>
+            </div>
 
-        <h3>Position-Hold Performance</h3>
-        <p>The system's viability relies heavily on the USV's ability to provide a stable platform for UAV takeoff and landing[cite: 1071]. During the full mission execution pipeline, the NEST automatically entered its holonomic position hold mode upon reaching designated waypoints[cite: 990]. Post-analysis of the GPS telemetry data revealed that the latitude and longitude positional drift was exceptionally low, constrained to approximately 40 centimeters[cite: 995, 999]. This sub-meter precision confirms the vehicle's capability to safely support precise aerial operations at sea[cite: 999].</p>
+            <!-- ================= SIM NAV ================= -->
+            <div class="subsection">
+                <h3>Simulated Navigation</h3>
+                <p>
+                    The platform successfully executed autonomous waypoint navigation, generating global paths 
+                    and translating them into thrust commands. In simulation, the vehicle covered 63.2 m in ~60 s, 
+                    reaching an average velocity of 1.05 m/s.
+                </p>
 
-        <figure>
-            <img src="images/figure4_22_gps_trajectory.jpg" alt="Heatmap graph showing the GPS trajectory of the NEST USV">
-            <figcaption>Evolution of the NEST position over time in GPS coordinates, demonstrating stable pathing and sub-meter precision during position-hold operations[cite: 1037].</figcaption>
-        </figure>
-    </section> -->
+                <div class="image-gallery">
+                    <figure>
+                        <img src="../assets/images/sim1.png" alt="Computed path">
+                        <figcaption>Initial and target waypoints.</figcaption>
+                    </figure>
+                    <figure>
+                        <img src="../assets/images/sim2.png" alt="Navigation evolution">
+                        <figcaption>Vehicle progression during navigation.</figcaption>
+                    </figure>
+                </div>
+            </div>
+
+            <!-- ================= REAL WORLD ================= -->
+            <div class="subsection">
+                <h3>Real-World Validation</h3>
+                <p>
+                    Field tests at the ATLANTIS Test Center validated system performance under environmental disturbances. 
+                    The vehicle covered 40 m in 49 s, with an average speed of 0.82 m/s.
+                </p>
+
+                <p>
+                    Position hold performance showed high stability, with GPS variation around 40 cm, 
+                    enabling reliable UAV takeoff and landing operations. The graph bellow illustrates the position hold performance, during the time intervals ~[1.3 , 1.5] minutes and ~[2.5 , 2.7] minutes.
+                </p>
+
+                <div class="image-gallery">
+                    <div style="text-align: center;">
+                        <img src="../assets/images/real_viana.png"
+                            alt="Real vs simulation"
+                            style="width: 75%; border-radius: 8px;">
+                        <p style="font-size: 0.9rem; color: #aaa;">
+                            Comparison between simulated and real-world navigation.
+                        </p>
+                    </div>
+                    <figure>
+                        <img src="../assets/images/poshold.png" alt="Position stability">
+                        <figcaption>Position stability during hold mode.</figcaption>
+                    </figure>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="video-section" id="videos">
+        <h2>Videos</h2>
+        <hr>
+
+        <div class="video-grid">
+
+            <figure class="video-card">
+                <video autoplay muted loop playsinline>
+                    <source src="../assets/videos/takeoff_edited.mp4" type="video/mp4">
+                </video>
+                <figcaption>Take-off</figcaption>
+            </figure>
+
+            <figure class="video-card">
+                <video autoplay muted loop playsinline>
+                    <source src="../assets/videos/landing_edited.mp4" type="video/mp4">
+                </video>
+                <figcaption>Landing</figcaption>
+            </figure>
+
+            <figure class="video-card">
+                <video autoplay muted loop playsinline>
+                    <source src="../assets/videos/poshold_edited.mp4" type="video/mp4">
+                </video>
+                <figcaption>Position hold</figcaption>
+            </figure>
+
+        </div>
+    </section>
 </main>
 
 </body>
