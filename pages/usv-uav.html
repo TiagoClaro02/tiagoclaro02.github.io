@@ -22,11 +22,16 @@
 <main class="container">
     <section id="overview">
         <h2>System Architecture</h2>
-        <p>The integration of Unmanned Aerial Vehicles (UAVs) and Unmanned Surface Vehicles (USVs) for autonomous survey missions requires a hybrid architecture. In this framework, the Ground Station acts as a supervisory interface for mission configuration and monitoring. Once deployed, time-critical tasks rely on a decentralized host-guest communication model.</p>
-        <p>The USV acts as the "host," issuing commands like enabling flight modes or triggering takeoffs, while the UAV acts as the "guest," acknowledging and validating operations. This tight coupling allows the UAV to focus on inspection tasks while offloading navigation and communication responsibilities to the USV.</p>
+        <p>The integration of Unmanned Aerial Vehicles (UAVs) and Unmanned Surface Vehicles (USVs) for autonomous survey missions—specifically the inspection of floating photovoltaic (PV) plants—requires a hybrid architecture. In this framework, the Ground Station acts as a supervisory interface for mission configuration and monitoring. Once deployed, time-critical tasks rely on a decentralized host-guest communication model.</p>
+        <p>The USV acts as the "host," issuing commands like enabling flight modes or triggering takeoffs, while the UAV acts as the "guest," acknowledging and validating operations. By transporting the drone to the offshore solar site, the USV mitigates the UAV's limited flight endurance. This tight coupling allows the UAV to focus entirely on scanning the solar panels for thermal hot-spots and physical obstructions, while offloading navigation and communication responsibilities to the USV.</p>
         
         <figure>
-            <img src="../assets/images/mission_planner.png" alt="Mission Planner Architecture showing Ground Station, USV, and UAV communication">
+            <img src="../assets/images/schematic_mission.png" alt="Schematic overview of the multi-stage autonomous inspection mission">
+            <figcaption>Schematic overview of the multi-stage autonomous USV-UAV inspection mission.</figcaption>
+        </figure>
+        
+        <figure>
+            <img src="../assets/images/mission_planner.png" alt="Mission Planner Architecture detailing human-robot and robot-robot communication flows.">
             <figcaption>Mission Planner Architecture detailing human-robot and robot-robot communication flows.</figcaption>
         </figure>
     </section>
@@ -78,6 +83,35 @@
             <figcaption>Stage 2 of the emergency landing solver, evaluating candidate waypoints using concentric search radii.</figcaption>
         </figure>
     </section>
+
+    <!-- <section id="results">
+        <h2>Mission Validation & Performance</h2>
+        <p>The cooperative mission planning framework was extensively tested to evaluate its impact on overall inspection efficiency, path generation, and emergency responsiveness.</p>
+
+        <h3>Cooperative Efficiency vs. Solo UAV</h3>
+        <p>The primary advantage of the marsupial approach is mitigating drone battery limitations. In a simulated inspection of the Alqueva dam floating PV plant, the cooperative mission took 42 minutes, with the UAV only airborne for 17 minutes to cover 2,367 meters of solar panels.</p>
+        <ul>
+            <li><strong>Maximized Inspection Time:</strong> Only 50 meters of the UAV's flight was spent in transit. An impressive 97.89% of its total flight distance was dedicated strictly to the inspection task.</li>
+            <li><strong>Overcoming Battery Limits:</strong> If a solo UAV were to perform the same mission from shore, 30.5% of its flight would be wasted just traveling to and from the offshore site. This would push the total flight time to approximately 25 minutes—exceeding the standard 20-minute endurance limit of commercial multi-rotors.</li>
+            <li><strong>Overall Reduction:</strong> The cooperative architecture reduced total UAV flight time by 32%, proving its necessity for deep-water or distant offshore inspections.</li>
+        </ul>
+
+        <h3>Field Testing: Full Mission Pipeline</h3>
+        <p>To validate the system beyond simulations, near-real scenarios were executed at the ATLANTIS Test Center. The NEST successfully established communication links with the ground station and executed the full logic pipeline in physical waters. The USV reliably entered position-hold mode at designated waypoints, triggered the UAV takeoff sequence, and waited for landing confirmation before returning to the home position.</p>
+
+        <figure>
+            <img src="images/figure4_21_field_mission.jpg" alt="Side-by-side comparison of RViz simulation and real-world drone footage showing USV-UAV cooperation">
+            <figcaption>Full mission execution in the field: the USV reliably holds position to deploy and recover the UAV, perfectly mirroring the simulated logic.</figcaption>
+        </figure>
+
+        <h3>Emergency Retrieval Validation</h3>
+        <p>To test the system's resilience, an emergency retrieval was deliberately triggered mid-mission while the UAV was inspecting panels and the USV was navigating to the landing zone. The results were highly successful:</p>
+        <ul>
+            <li>Both vehicles instantly aborted their standard tasks and routed to the dynamically calculated optimal rendezvous point.</li>
+            <li>The algorithm successfully accounted for the vehicles' speed differential (1:8 ratio), ensuring the USV reached the emergency waypoint first, minimizing the UAV's airborne loiter time.</li>
+            <li>The UAV landed safely within 75 seconds of the emergency trigger, and the entire recovery (including the coupled return to shore) was completed in just 4 minutes.</li>
+        </ul>
+    </section> -->
 </main>
 
 </body>

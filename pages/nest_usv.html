@@ -22,13 +22,8 @@
 <main class="container">
     <section id="overview">
         <h2>Project Overview</h2>
-        <p>The NEST (Non-stationary Emersed Structure for Takeoff-landing) is a novel catamaran-style Unmanned Surface Vehicle (USV) designed to serve as a mobile launch and recovery platform for Unmanned Aerial Vehicles (UAVs). This project aims to improve the inspection of floating photovoltaic (PV) plants through a cooperative approach, where the USV provides transportation and communication infrastructure to the UAV.</p>
-        <p>By transporting the UAV to the offshore inspection site and retrieving it afterward, the USV significantly reduces the UAV's flight time and extends its effective operation range. The dual-hull configuration ensures a stable platform for safe landings in maritime environments.</p>
-        
-        <figure>
-            <img src="../assets/images/schematic_mission.png" alt="Schematic overview of the multi-stage autonomous inspection mission">
-            <figcaption>Schematic overview of the multi-stage autonomous USV-UAV inspection mission.</figcaption>
-        </figure>
+        <p>The NEST (Non-stationary Emersed Structure for Takeoff-landing) is a novel catamaran-style Unmanned Surface Vehicle (USV) custom-engineered to serve as a mobile launch and recovery platform for Unmanned Aerial Vehicles (UAVs). Designed to operate autonomously in maritime environments, it acts as a floating base station that provides essential transportation, power, and communication infrastructure to support extended aerial operations.</p>
+        <p>Built with a highly stable dual-hull configuration, the NEST USV features an integrated 2x2 meter landing pad capable of supporting precise UAV landings even under challenging aquatic conditions. Its holonomic vectorial drive system enables advanced maneuverability and active position-holding, which are critical for executing safe and reliable UAV deployment and retrieval procedures at sea.</p>
         
         <figure>
             <img src="../assets/images/nest_usv.png" alt="NEST USV Catamaran Design">
@@ -114,6 +109,30 @@
             <li><strong>Thrust Control:</strong> A decoupled PID architecture independently translates linear and angular velocity targets into corresponding physical thrust forces, utilizing gain scheduling for low speeds and anti-windup protection.</li>
         </ul>
     </section>
+
+    <!-- <section id="results">
+        <h2>Experimental Results & Field Testing</h2>
+        <p>To rigorously validate the NEST platform prior to real-world deployment, a series of physics-based simulations were conducted, followed by near-real field tests at the ATLANTIS Test Center in Viana do Castelo[cite: 750, 957].</p>
+        
+        <h3>Simulation & Kinematic Validation</h3>
+        <p>The initial validation utilized the Gazebo simulator, enhanced with an ocean plugin to accurately model buoyancy and physical maritime interactions[cite: 751]. A Software-In-The-Loop (SITL) approach was employed, allowing virtual sensor data to be processed directly by the ArduSub autopilot firmware[cite: 762]. This ensured the hardware-software interface was realistically simulated without simplified abstractions[cite: 763]. During autonomous waypoint navigation tests with an empty costmap to a goal at (20, 60) meters, the NEST traveled 63.2 meters in approximately 60 seconds[cite: 774, 776, 805]. This resulted in an average linear velocity of 1.05 m/s, demonstrating smooth trajectory tracking and consistent performance under ideal conditions[cite: 805].</p>
+
+        <h3>Real-World Navigation & Environmental Compensation</h3>
+        <p>Physical field tests were executed to assess the mechanical integrity, kinematic configuration, and low-level thruster control[cite: 958]. During a real-world waypoint navigation test, the NEST covered a distance of approximately 40 meters in 49 seconds[cite: 966]. This yielded an average velocity of 0.82 m/s[cite: 966]. The suboptimal speed, compared to the simulation, demonstrated the low-level controller's active compensation for external environmental factors such as water currents and wind while successfully maintaining the planned trajectory[cite: 966].</p>
+
+        <figure>
+            <img src="images/figure4_19_field_navigation.jpg" alt="Side-by-side comparison of RViz simulation and real-world drone footage of the NEST USV navigating">
+            <figcaption>Waypoint navigation progression: comparison between RViz simulation planning and real-world field execution[cite: 981].</figcaption>
+        </figure>
+
+        <h3>Position-Hold Performance</h3>
+        <p>The system's viability relies heavily on the USV's ability to provide a stable platform for UAV takeoff and landing[cite: 1071]. During the full mission execution pipeline, the NEST automatically entered its holonomic position hold mode upon reaching designated waypoints[cite: 990]. Post-analysis of the GPS telemetry data revealed that the latitude and longitude positional drift was exceptionally low, constrained to approximately 40 centimeters[cite: 995, 999]. This sub-meter precision confirms the vehicle's capability to safely support precise aerial operations at sea[cite: 999].</p>
+
+        <figure>
+            <img src="images/figure4_22_gps_trajectory.jpg" alt="Heatmap graph showing the GPS trajectory of the NEST USV">
+            <figcaption>Evolution of the NEST position over time in GPS coordinates, demonstrating stable pathing and sub-meter precision during position-hold operations[cite: 1037].</figcaption>
+        </figure>
+    </section> -->
 </main>
 
 </body>

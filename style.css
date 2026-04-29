@@ -150,3 +150,99 @@ footer {
     background: rgba(122, 162, 255, 0.15);
     color: #ffffff;
 }
+
+/* --- Image and Figure Styling --- */
+
+figure {
+    /* Centers the figure in the column and adds breathing room */
+    margin: 2.5rem auto; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* Prevents the figure from getting too wide on large screens */
+    max-width: 85%; 
+}
+
+figure img {
+    /* Ensures images never overflow their container */
+    max-width: 100%;
+    /* You can cap the maximum height to prevent vertical images from taking over the screen */
+    max-height: 500px; 
+    height: auto;
+    /* Keeps the image aspect ratio intact without stretching */
+    object-fit: contain; 
+    
+    /* Professional styling touches */
+    border-radius: 8px; /* Soft, modern corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle depth */
+    border: 1px solid #eaeaea; /* Light border to frame the image */
+}
+
+figcaption {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+    line-height: 1.4;
+    max-width: 80%; /* Keeps the caption readable and neat under the image */
+}
+
+.cta {
+    color: #4ea1ff;
+    font-weight: 600;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: #ddd;
+    background: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Header */
+thead {
+    background: #2a2a2a;
+}
+
+thead th {
+    text-align: left;
+    padding: 12px 14px;
+    font-weight: 600;
+    color: #ffffff;
+    border-bottom: 1px solid #3a3a3a;
+    font-size: 0.9rem;
+}
+
+/* Body */
+tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #2f2f2f;
+}
+
+/* Alternate rows */
+tbody tr:nth-child(even) {
+    background: #242424;
+}
+
+/* Hover effect */
+tbody tr:hover {
+    background: #2f2f2f;
+    transition: 0.2s;
+}
+
+/* First column emphasis */
+tbody td:first-child {
+    font-weight: 500;
+    color: #aaa;
+    width: 40%;
+}
+
+/* Second column */
+tbody td:last-child {
+    color: #e0e0e0;
+}
