@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Greenhouse Row-Following Mission | Tiago Claro</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* Page-scoped override: on this page, video and images should fill
+           the same width as the surrounding text, not the narrower default
+           (900px / 85%) used elsewhere on the site. Scoped here rather than
+           edited in style.css so other pages using the same classes are
+           unaffected. */
+        #results figure {
+            max-width: 100%;
+        }
+        #results figure img {
+            width: 100%;
+            max-width: 100%;
+            max-height: none;
+        }
+        #results .video-block video {
+            width: 100%;
+            max-width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="info">
+        <h1>Greenhouse Row-Following Mission</h1>
+        <p>Autonomous Nav2-based boustrophedon navigation with live blockage detection and recovery</p>
+    </div>
+</header>
+
+<nav class="nav">
+    <a href="../index.html">Back to Portfolio</a>
+</nav>
+
+<nav class="section-index">
+    <a href="#overview">Overview</a>
+    <a href="#mission-design">Mission & Recovery Design</a>
+    <a href="#tuning">Tuning</a>
+    <a href="#results">Results</a>
+</nav>
+
+<main class="container">
+    <section id="overview">
+        <h2>Project Overview</h2>
+        <hr>
+        <p>A ROS2 Jazzy / Gazebo Harmonic / Nav2 simulation of a TurtleBot3 navigating a greenhouse's crop rows in a boustrophedon (back-and-forth) pattern, developed as a take-home technical assessment for a Robotics Software Engineer role. The robot must traverse narrow row corridors smoothly, detect and recover from an unexpected obstacle blocking a row, and report mission progress throughout.</p>
+        <p>The simulation environment itself — world geometry, static map, and mission waypoints — is generated parametrically rather than hand-authored: a single configuration file defines row count, row width, row length, and headland size, and three scripts derive the Gazebo world, occupancy grid, and waypoints from it. Changing any dimension is a one-line edit and a re-run, not a manual re-authoring of SDF/YAML files — put directly to the test in the narrow-row scenario below.</p>
+
+        <figure>
+            <img src="../assets/images/greenhouse_world.png" alt="Gazebo greenhouse world with three crop rows">
+            <figcaption>The generated Gazebo world: three parallel crop-row corridors with headlands at each end.</figcaption>
+        </figure>
+    </section>
+
+    <section id="mission-design">
+        <h2>Mission & Recovery Design</h2>
+        <hr>
+        <p>The mission node drives each row's entry and exit waypoints in sequence using Nav2's <code>BasicNavigator</code>. Row direction is decided dynamically at runtime rather than fixed in advance: a naive boustrophedon alternates entry side by row index, but this breaks the moment a row is skipped — the robot never reaches the far side of a blocked row, so forcing the next row's entry to the "expected" side would send it on an unnecessary crossing back to a side it never reached. A tracked <code>current_side</code> state instead flips only when a row is genuinely completed.</p>
+        <ul>
+            <li><strong>The core recovery challenge:</strong> every row's headland connects to every other row's headland at both ends (required by the environment's design). This means Nav2's global planner can "solve" a blocked row by silently detouring through a neighboring row and back in — reaching the correct final position without ever actually driving the blocked row.</li>
+            <li><strong>Detection:</strong> the robot has no way to know about a blockage until its own sensors observe it, so the mission node continuously monitors the live replanned path length against a geometrically-derived threshold for the entire duration of each leg. As soon as a replan indicates a detour rather than a direct traversal, the task is cancelled immediately rather than letting the robot drive the full detour.</li>
+        </ul>
+    </section>
+
+    <section id="tuning">
+        <h2>Costmap & Controller Tuning</h2>
+        <hr>
+        <p>Nav2's inflation layer was tuned specifically for narrow-corridor navigation, following Nav2's own tuning guidance: cost-aware planners produce suboptimal paths in flat, zero-cost regions, so a smooth cost gradient across the full navigable width — rather than a wide flat zero-cost strip — lets the planner's inherent per-cell distance cost correctly discourage long detours around a partial obstacle instead of being confused by an uninformative flat cost landscape.</p>
+        <p>AMCL's correction cadence was also tightened for long, feature-sparse rows, where along-corridor position is weakly constrained by lidar scan matching and relies mostly on odometry between corrections — more frequent, smaller corrections noticeably reduced low-frequency steering oscillation during straight-row driving.</p>
+    </section>
+
+    <section id="results" class="portfolio-section">
+        <div class="content-container">
+            <h2>Results</h2>
+            <hr>
+
+            <!-- ================= NORMAL TRAVERSAL ================= -->
+            <div class="subsection">
+                <h3>Normal Row Traversal</h3>
+                <p>Smooth, direct traversal of a 1m-wide row with the tuned costmap and controller configuration.</p>
+
+                <div class="video-block">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://github.com/user-attachments/assets/2048fcee-7007-4cab-9eb3-a468bee453ad" type="video/webm">
+                    </video>
+                    <p class="video-caption">Normal row traversal</p>
+                </div>
+
+                <figure>
+                    <img src="../assets/images/greenhouse_1m.png" alt="Trajectory plot of normal row traversal">
+                    <figcaption>Recorded trajectory over the occupancy grid.</figcaption>
+                </figure>
+            </div>
+
+            <!-- ================= NARROW ROWS ================= -->
+            <div class="subsection">
+                <h3>Narrow Rows (0.8m)</h3>
+                <p>The same mission re-run after narrowing every row and headland to 0.8m — a live dimension change of exactly the kind the parametric world generator was built to absorb without hand-editing any world or map files. Costmap tuning was revisited for the tighter corridors and turning space.</p>
+
+                <div class="video-block">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://github.com/user-attachments/assets/c59c8e34-d197-4fa4-9205-72ec81223aab" type="video/webm">
+                    </video>
+                    <p class="video-caption">Narrow rows (0.8m)</p>
+                </div>
+
+                <figure>
+                    <img src="../assets/images/greenhouse_0_8.png" alt="Trajectory plot of narrow row traversal">
+                    <figcaption>Recorded trajectory over the occupancy grid.</figcaption>
+                </figure>
+            </div>
+
+            <!-- ================= PARTIAL OBSTRUCTION ================= -->
+            <div class="subsection">
+                <h3>Partially Obstructed Row</h3>
+                <p>An obstacle covering part of the row's width, leaving enough clearance to pass safely. The robot navigates around it directly within the row, rather than triggering the full detour-detection and row-skip behavior — the correct outcome when the obstruction is genuinely passable.</p>
+
+                <div class="video-block">
+                    <video autoplay muted loop playsinline>
+                        <source src="https://github.com/user-attachments/assets/5b95210c-be21-4f57-9a11-eb625a3eb2c6" type="video/webm">
+                    </video>
+                    <p class="video-caption">Partially obstructed row</p>
+                </div>
+
+                <figure>
+                    <img src="../assets/images/greenhouse_partial.png" alt="Trajectory plot of partial obstruction avoidance">
+                    <figcaption>Recorded trajectory over the occupancy grid.</figcaption>
+                </figure>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+</body>
+</html>
